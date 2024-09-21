@@ -40,7 +40,7 @@
 
 ## 🔥 Screenshots
 
-![Prieview](![image](https://github.com/user-attachments/assets/492ad78a-ff5a-446e-bc49-71bbe22672d8)
+![Prieview](https://github.com/user-attachments/assets/492ad78a-ff5a-446e-bc49-71bbe22672d8)
 
 
 ## 📝 Feedback
