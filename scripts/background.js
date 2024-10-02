@@ -1,5 +1,6 @@
 let customReplaces = null;
-const version = "1.0";
+const version = "1.1";
+let apiSearchKey = null;
 
 fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/server.json')
   .then(response => response.json())
@@ -15,6 +16,29 @@ fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/head
     customReplaces = data?.custom_replaces;
   });
 
+async function getKey() {
+  let appUrl = null;
+  await fetch('https://howlongtobeat.com')
+    .then(response => response.text())
+    .then(html => {
+      if (!html) return;
+      const _appUrl = html.slice(html.indexOf("/pages/_app-") - 40).split('"')[1];
+      if (!_appUrl) return;
+      appUrl = _appUrl;
+    });
+  
+  if (appUrl)
+    await fetch(`https://howlongtobeat.com${appUrl}`)
+      .then(response2 => response2.text())
+      .then(script => {
+        if (!script) return;
+        const apiKey = script.slice(script.indexOf('fetch("/api/search/".concat("')).split('"')[3];
+        if (!apiKey) return;
+        apiSearchKey = apiKey;
+      }); 
+}
+getKey();
+  
 chrome.notifications.onClicked.addListener(() => {
   chrome.tabs.create({ url: 'https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/' });
 });
@@ -54,7 +78,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true;
   }
   else if (message.action === 'searchHLTB') {
-    fetch("https://howlongtobeat.com/api/search/21fda17e4a1d49be", {
+    if (!apiSearchKey) return;
+    fetch(`https://howlongtobeat.com/api/search/${apiSearchKey}`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
