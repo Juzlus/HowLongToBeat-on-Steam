@@ -65,7 +65,7 @@ async function searchByName(name)
     if (customReplaces)
         customReplaces?.forEach(el => {
             const reg = el?.split('#');
-            gameName = gameName?.replace(reg[0], reg[1]);
+            gameName = gameName?.replace(new RegExp(reg[0]), reg[1]);
         });
 
     const response = await searchHLTB(gameName);
