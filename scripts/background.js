@@ -1,6 +1,6 @@
 let customReplaces = null;
-const version = "1.1";
-let apiSearchKey = null;
+const version = "1.2";
+let apiUserKey = null;
 
 fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/server.json')
   .then(response => response.json())
@@ -32,9 +32,9 @@ async function getKey() {
       .then(response2 => response2.text())
       .then(script => {
         if (!script) return;
-        const apiKey = script.slice(script.indexOf('fetch("/api/search/".concat("')).split('"')[3];
+        const apiKey = script.slice(script.indexOf('users:{id:"')).split('"')[1];
         if (!apiKey) return;
-        apiSearchKey = apiKey;
+        apiUserKey = apiKey;
       }); 
 }
 getKey();
@@ -78,8 +78,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true;
   }
   else if (message.action === 'searchHLTB') {
-    if (!apiSearchKey) return;
-    fetch(`https://howlongtobeat.com/api/search/${apiSearchKey}`, {
+    if (!apiUserKey) return;
+    fetch(`https://howlongtobeat.com/api/search`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -112,6 +112,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             modifier: ""
           },
           users: {
+            id: apiUserKey,
             sortCategory: "postcount"
           },
           lists: {
