@@ -67,7 +67,6 @@ async function searchByName(name)
             const reg = el?.split('#');
             gameName = gameName?.replace(new RegExp(reg[0]), reg[1]);
         });
-
     const response = await searchHLTB(gameName);
     if (!response) return;
     const json = JSON.parse(response);
