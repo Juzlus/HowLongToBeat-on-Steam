@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "HowLongToBeat on Steam",
-    "version": "1.3",
+    "version": "1.4",
     "author": ["🇯🅤🇿🅛🇺🅢#0420"],
     "icons": {
         "128": "icons/128.png" 

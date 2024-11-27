@@ -1,5 +1,5 @@
 let customReplaces = null;
-const version = "1.3";
+const version = "1.4";
 
 let apiUserKey = null;
 let apiSearchKey = null;
@@ -106,7 +106,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           gameplay: {
             perspective: "",
             flow: "",
-            genre: ""
+            genre: "",
+            subGenre: " "
           },
           rangeYear: {
             min: "",
