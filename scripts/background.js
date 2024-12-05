@@ -1,8 +1,9 @@
 let customReplaces = null;
-const version = "1.4";
+const version = "1.5";
 
 let apiUserKey = null;
 let apiSearchKey = null;
+let fetchData = null;
 
 fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/server.json')
   .then(response => response.json())
@@ -17,6 +18,15 @@ fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/head
       });
     customReplaces = data?.custom_replaces;
   });
+
+async function getFetchData() {
+  await fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/fetchData.txt')
+    .then(response => response.text())
+    .then(html => {
+      if (!html) return;
+      fetchData = html;
+    });
+}
 
 async function getKey() {
   let appUrl = null;
@@ -46,7 +56,9 @@ async function getKey() {
         });
       });
 }
+
 getKey();
+getFetchData();
   
 chrome.notifications.onClicked.addListener(() => {
   chrome.tabs.create({ url: 'https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/' });
@@ -88,48 +100,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   else if (message.action === 'searchHLTB') {
     if (!apiUserKey && !apiSearchKey) return;
-    const fetchData = {
-      searchType: "games",
-      searchTerms: message?.gameName?.split(' '),
-      searchPage: 1,
-      size: 20,
-      searchOptions: {
-        games: {
-          userId: 0,
-          platform: "PC",
-          sortCategory: "name",
-          rangeCategory: "main",
-          rangeTime: {
-            min: null,
-            max:null
-          },
-          gameplay: {
-            perspective: "",
-            flow: "",
-            genre: "",
-            subGenre: " "
-          },
-          rangeYear: {
-            min: "",
-            max: ""
-          },
-          modifier: ""
-        },
-        users: {
-          sortCategory: "postcount"
-        },
-        lists: {
-          sortCategory: "follows"
-        },
-        filter: "",
-        sort: 0,
-        randomizer: 0
-      },
-      useCache: true
-    };
+    if (!fetchData) return;
+    fetchData = fetchData.replace("{SEARCH_TERMS}", JSON.stringify(message?.gameName?.split(' ')));
 
     if (apiUserKey)
-      fetchData.searchOptions.users.id = apiUserKey;
+      fetchData = fetchData.replace("{USER_ID}", apiUserKey);
 
     fetch(`https://howlongtobeat.com/api/search${apiSearchKey ? `/${apiSearchKey}` : ""}`, {
       method: 'POST',
@@ -137,7 +112,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         "Content-Type": "application/json",
         origin: "https://howlongtobeat.com/",
       },
-      body: JSON.stringify(fetchData)
+      body: fetchData
     })
       .then(response => response.text())
       .then(data => sendResponse({ success: true, data: data }))
