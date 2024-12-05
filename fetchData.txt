@@ -1,0 +1,40 @@
+{
+  "searchType": "games",
+  "searchTerms": {SEARCH_TERMS},
+  "searchPage": 1,
+  "size": 20,
+  "searchOptions": {
+    "games": {
+      "userId": 0,
+      "platform": "PC",
+      "sortCategory": "name",
+      "rangeCategory": "main",
+      "rangeTime": {
+        "min": null,
+        "max": null
+      },
+      "gameplay": {
+        "perspective": "",
+        "flow": "",
+        "genre": "",
+        "subGenre": ""
+      },
+      "rangeYear": {
+        "min": "",
+        "max": ""
+      },
+      "modifier": ""
+    },
+    "users": {
+      "id": "{USER_ID}",
+      "sortCategory": "postcount"
+    },
+    "lists": {
+      "sortCategory": "follows"
+    },
+    "filter": "",
+    "sort": 0,
+    "randomizer": 0
+  },
+  "useCache": true
+}
