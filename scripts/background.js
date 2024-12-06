@@ -1,5 +1,5 @@
 let customReplaces = null;
-const version = "1.5";
+const version = "1.5.1";
 
 let apiUserKey = null;
 let apiSearchKey = null;
@@ -101,10 +101,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   else if (message.action === 'searchHLTB') {
     if (!apiUserKey && !apiSearchKey) return;
     if (!fetchData) return;
-    fetchData = fetchData.replace("{SEARCH_TERMS}", JSON.stringify(message?.gameName?.split(' ')));
+    let fetchDataCopy = fetchData.replace("{SEARCH_TERMS}", JSON.stringify(message?.gameName?.split(' ')));
 
     if (apiUserKey)
-      fetchData = fetchData.replace("{USER_ID}", apiUserKey);
+      fetchDataCopy = fetchData.replace("{USER_ID}", apiUserKey);
 
     fetch(`https://howlongtobeat.com/api/search${apiSearchKey ? `/${apiSearchKey}` : ""}`, {
       method: 'POST',
@@ -112,7 +112,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         "Content-Type": "application/json",
         origin: "https://howlongtobeat.com/",
       },
-      body: fetchData
+      body: fetchDataCopy
     })
       .then(response => response.text())
       .then(data => sendResponse({ success: true, data: data }))
