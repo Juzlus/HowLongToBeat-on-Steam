@@ -106,7 +106,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (apiUserKey)
       fetchDataCopy = fetchData.replace("{USER_ID}", apiUserKey);
 
-    fetch(`https://howlongtobeat.com/api/search${apiSearchKey ? `/${apiSearchKey}` : ""}`, {
+    fetch(`https://howlongtobeat.com/api/find${apiSearchKey ? `/${apiSearchKey}` : ""}`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
