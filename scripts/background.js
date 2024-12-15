@@ -1,5 +1,5 @@
 let customReplaces = null;
-const version = "1.5.1";
+const version = "1.6";
 
 let apiUserKey = null;
 let apiSearchKey = null;
@@ -48,7 +48,7 @@ async function getKey() {
         if (userKey)
           apiUserKey = userKey;
 
-        const index = script.indexOf('fetch("/api/search/".concat("');
+        const index = script.indexOf('fetch("/api/find/".concat("');
         const frag = script.slice(index - 100, index + 100);
         const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
         matches.forEach(el => {
