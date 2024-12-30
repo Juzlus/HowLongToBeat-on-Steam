@@ -1,5 +1,5 @@
 let customReplaces = null;
-let subPage = "find"
+let subPage = "lookup"
 const version = "1.7";
 
 let apiUserKey = null;
@@ -18,7 +18,6 @@ fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/head
         type: 'basic'
       });
     customReplaces = data?.custom_replaces;
-    subPage = data?.fetchSubPage;
   });
 
 async function getFetchData() {
@@ -50,8 +49,11 @@ async function getKey() {
         if (userKey)
           apiUserKey = userKey;
 
-        const index = script.indexOf(`fetch("/api/${subPage}/".concat("`);
-        const frag = script.slice(index - 100, index + 100);
+        script = script.slice(script.indexOf('await fetch("/api/logout"') + 70);
+        const index = script.indexOf(`fetch("/api/`);
+        const frag = script.slice(index, index + 100);
+        subPage = frag.slice(0 + 12, frag.indexOf('/".concat'));
+
         const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
         matches.forEach(el => {
           apiSearchKey = !apiSearchKey ? el[1] : apiSearchKey + el[1];
