@@ -1,5 +1,6 @@
 let customReplaces = null;
-const version = "1.6";
+let subPage = "find"
+const version = "1.7";
 
 let apiUserKey = null;
 let apiSearchKey = null;
@@ -17,6 +18,7 @@ fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/head
         type: 'basic'
       });
     customReplaces = data?.custom_replaces;
+    subPage = data?.fetchSubPage;
   });
 
 async function getFetchData() {
@@ -48,7 +50,7 @@ async function getKey() {
         if (userKey)
           apiUserKey = userKey;
 
-        const index = script.indexOf('fetch("/api/find/".concat("');
+        const index = script.indexOf(`fetch("/api/${subPage}/".concat("`);
         const frag = script.slice(index - 100, index + 100);
         const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
         matches.forEach(el => {
@@ -106,7 +108,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (apiUserKey)
       fetchDataCopy = fetchData.replace("{USER_ID}", apiUserKey);
 
-    fetch(`https://howlongtobeat.com/api/find${apiSearchKey ? `/${apiSearchKey}` : ""}`, {
+    fetch(`https://howlongtobeat.com/api/${subPage}${apiSearchKey ? `/${apiSearchKey}` : ""}`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
