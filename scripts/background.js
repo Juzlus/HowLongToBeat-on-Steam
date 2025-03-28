@@ -1,6 +1,6 @@
 let customReplaces = null;
 let subPage = "lookup"
-const version = "1.7";
+const version = "1.8";
 
 let apiUserKey = null;
 let apiSearchKey = null;
@@ -11,14 +11,28 @@ fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/head
   .then(data => {
     if (!data) return;
     if (data?.version != version)
-      chrome.notifications.create({
-        title: 'HowLongToBeat on Steam',
-        message: 'A new version of the extension is available. Click here to check it out!',
-        iconUrl: 'https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/icons/2048.png',
-        type: 'basic'
-      });
+    chrome.notifications.create('updateNotification', {
+      title: 'HowLongToBeat on Steam',
+      message: 'New version available. Click the button below!',
+      priority: 1,
+      iconUrl: 'https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/icons/2048.png',
+      type: 'basic',
+      buttons: [{ title: 'See Release' }, { title: 'Download' }]
+    });
     customReplaces = data?.custom_replaces;
-  });
+
+    chrome.notifications.onButtonClicked.addListener((notifId, btnIdx) => {
+      if (notifId !== 'updateNotification') return;
+      if (btnIdx === 0)
+        chrome.tabs.create({
+          url: 'https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/'
+        });
+      else
+        chrome.tabs.create({
+          url: `https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/download/HowLongToBeat_on_Steam_v${data?.version}.zip`
+        });
+    });
+});
 
 async function getFetchData() {
   await fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/fetchData.txt')
@@ -49,10 +63,9 @@ async function getKey() {
         if (userKey)
           apiUserKey = userKey;
 
-        script = script.slice(script.indexOf('await fetch("/api/logout"') + 70);
-        const index = script.indexOf(`fetch("/api/`);
-        const frag = script.slice(index, index + 100);
-        subPage = frag.slice(0 + 12, frag.indexOf('/".concat'));
+        const index = script.indexOf('searchOptions:');
+        const frag = script.slice(index - 400, index);
+        subPage = frag.slice(frag.indexOf(`fetch("/api/`) + 12, frag.indexOf('/".concat'));
 
         const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
         matches.forEach(el => {
@@ -63,10 +76,6 @@ async function getKey() {
 
 getKey();
 getFetchData();
-  
-chrome.notifications.onClicked.addListener(() => {
-  chrome.tabs.create({ url: 'https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/' });
-});
 
 chrome.runtime.onInstalled.addListener(async () => {
   const rules = [{
@@ -110,7 +119,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (apiUserKey)
       fetchDataCopy = fetchData.replace("{USER_ID}", apiUserKey);
 
-    fetch(`https://howlongtobeat.com/api/${subPage}${apiSearchKey ? `/${apiSearchKey}` : ""}`, {
+    fetch(`https://howlongtobeat.com/api/${subPage}/${apiSearchKey ? `${apiSearchKey}` : ""}`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

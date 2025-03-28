@@ -59,7 +59,8 @@ function hasYear(name)
 async function searchByName(name)
 {
     let [gameName, year] = hasYear(name);
-    gameName = gameName.replace(/[^a-zA-Z0-9 -_']/g, '');
+    if (!gameName) return;
+    gameName = gameName?.replace(/[^a-zA-Z0-9 -_']/g, '');
 
     const customReplaces = await getCustomReplaces();
     if (customReplaces)
