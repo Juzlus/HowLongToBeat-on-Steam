@@ -2,22 +2,30 @@
     "manifest_version": 3,
     "name": "HowLongToBeat on Steam",
     "version": "1.8",
-    "author": ["🇯🅤🇿🅛🇺🅢#0420"],
+    "author": "Juzlus",
     "icons": {
         "128": "icons/128.png" 
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "howlongtobeat-on-steam@juzlus"
+        }
     },
     "description": "Instantly check game completion times from HowLongToBeat on Steam pages.",
     "permissions": [
         "notifications",
         "tabs",
-        "declarativeNetRequestWithHostAccess",
-        "declarativeNetRequestFeedback"
+        "webRequest",
+        "webRequestBlocking"
     ],
     "host_permissions": [
-        "*://*/*"
+        "https://howlongtobeat.com/*",
+        "https://raw.githubusercontent.com/*",
+        "https://github.com/*",
+        "https://steamdb.info/*"
     ],
     "background": {
-        "service_worker": "scripts/background.js"
+        "scripts": ["scripts/background.js"]
     },
     "content_scripts": [
         {

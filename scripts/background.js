@@ -10,27 +10,21 @@ fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/head
   .then(response => response.json())
   .then(data => {
     if (!data) return;
-    if (data?.version != version)
+    if (data?.version_firefox != version)
     chrome.notifications.create('updateNotification', {
       title: 'HowLongToBeat on Steam',
-      message: 'New version available. Click the button below!',
+      message: 'New version available. Click to download!',
       priority: 1,
       iconUrl: 'https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/icons/2048.png',
-      type: 'basic',
-      buttons: [{ title: 'See Release' }, { title: 'Download' }]
+      type: 'basic'
     });
     customReplaces = data?.custom_replaces;
 
-    chrome.notifications.onButtonClicked.addListener((notifId, btnIdx) => {
+    chrome.notifications.onClicked.addListener((notifId) => {
       if (notifId !== 'updateNotification') return;
-      if (btnIdx === 0)
-        chrome.tabs.create({
-          url: 'https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/'
-        });
-      else
-        chrome.tabs.create({
-          url: `https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/download/HowLongToBeat_on_Steam_v${data?.version}.zip`
-        });
+      chrome.tabs.create({
+        url: `https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/download/HowLongToBeat_on_Steam_v${data?.version_firefox}_[FireFox].zip`
+      });
     });
 });
 
@@ -77,28 +71,19 @@ async function getKey() {
 getKey();
 getFetchData();
 
-chrome.runtime.onInstalled.addListener(async () => {
-  const rules = [{
-    id: 1,
-    action: {
-      type: 'modifyHeaders',
-      requestHeaders: [{
-        header: 'Referer',
-        operation: 'set',
-        value: 'https://howlongtobeat.com/',
-      }],
-    },
-    condition: {
-      domains: [chrome.runtime.id],
-      urlFilter: 'https://howlongtobeat.com/',
-      resourceTypes: ['xmlhttprequest'],
-    },
-  }];
-  await chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: rules.map(r => r.id),
-    addRules: rules,
-  });
-});
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  function(details) {
+    details.requestHeaders.push({
+      name: "Referer",
+      value: "https://howlongtobeat.com/"
+    });
+    return { requestHeaders: details.requestHeaders };
+  },
+  {
+    urls: ["https://howlongtobeat.com/*"]
+  },
+  ["blocking", "requestHeaders"]
+);
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'getCustomReplaces') {

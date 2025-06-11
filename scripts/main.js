@@ -70,6 +70,7 @@ async function searchByName(name)
         });
     const response = await searchHLTB(gameName);
     if (!response) return;
+
     const json = JSON.parse(response);
     if (!json || !json?.data?.length) return;
     return year ? json?.data?.filter(el => el?.release_world == year)[0] : json?.data[0];
