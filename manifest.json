@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "HowLongToBeat on Steam",
     "version": "1.8",
-    "author": ["🇯🅤🇿🅛🇺🅢#0420"],
+    "author": "Juzlus",
     "icons": {
         "128": "icons/128.png" 
     },
@@ -14,7 +14,10 @@
         "declarativeNetRequestFeedback"
     ],
     "host_permissions": [
-        "*://*/*"
+        "https://howlongtobeat.com/*",
+        "https://raw.githubusercontent.com/*",
+        "https://github.com/*",
+        "https://steamdb.info/*"
     ],
     "background": {
         "service_worker": "scripts/background.js"

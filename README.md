@@ -17,21 +17,26 @@
 ## 📁 How to add an extension
 
 1. Extract the files to a folder
-2. Go to the extensions page: `chrome://extensions`
-3. Enable developer mode
-4. Click the "Upload unzipped" button
-5. Select the folder with the extracted extension
+2. Chromium:
+  2.1. Go to the extensions page: `chrome://extensions`
+  2.2. Enable developer mode
+  2.3. Click the "`Upload unzipped`" button
+3. Firefox:
+  2.1. Go to the extensions page: `about:addons` (Firefox)
+  2.2. Click on the gear
+  2.3. Select the "`Install Add-on From File...`" option
+4. Select the folder with the extracted extension
 
 
 ## 🌐 Works on these browsers
 
-- Google Chrome
-- Microsoft Edge
-- Opera/Opera GX
-- Vivaldi Browser
-- Brave Browser
-- And others based on Chromium
-
+- [Google Chrome](https://www.google.com/chrome/)
+- [Microsoft Edge](https://www.microsoft.com/edge/download)
+- [Opera](https://www.opera.com/download) / [Opera GX](https://www.opera.com/gx)
+- [Vivaldi Browser](https://vivaldi.com/)
+- [Brave Browser](https://brave.com)
+- ... and others based on Chromium
+- [Mozilla Firefox](https://www.mozilla.org/firefox/)
 
 ## 🌍 Available languages
 
