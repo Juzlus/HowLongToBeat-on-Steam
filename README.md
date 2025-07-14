@@ -22,8 +22,8 @@
     - Enable developer mode
     - Click the "`Upload unzipped`" button
 3. Firefox:
-    - Go to the extensions page: `about:addons` (Firefox)
-    - Click on the gear
+    - Go to the extensions page: `about:addons`
+    - Click the gear icon
     - Select the "`Install Add-on From File...`" option
 4. Select the folder with the extracted extension
 
@@ -46,6 +46,12 @@
 ## 🔥 Screenshots
 
 ![Prieview](https://github.com/user-attachments/assets/492ad78a-ff5a-446e-bc49-71bbe22672d8)
+
+
+## 💼 Other projects
+<a href="https://github.com/Juzlus/GG.deals-on-Steam">
+  <img src="https://github.com/Juzlus/GG.deals-on-Steam/blob/server/icons/GG.deals-on-steam.png?raw=true">
+</a>
 
 
 ## 📝 Feedback
