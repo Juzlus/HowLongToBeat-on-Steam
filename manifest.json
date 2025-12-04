@@ -1,10 +1,10 @@
 {
     "manifest_version": 3,
     "name": "HowLongToBeat on Steam",
-    "version": "1.8",
+    "version": "1.9",
     "author": "Juzlus",
     "icons": {
-        "128": "icons/128.png" 
+        "128": "icons/128.png"
     },
     "description": "Instantly check game completion times from HowLongToBeat on Steam pages.",
     "permissions": [
@@ -27,10 +27,10 @@
             "matches": [
                 "https://store.steampowered.com/app/*"
             ],
-            "js":[
+            "js": [
                 "scripts/main.js"
             ],
-            "css":[
+            "css": [
                 "css/style.css"
             ]
         }
