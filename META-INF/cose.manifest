@@ -1,0 +1,42 @@
+Manifest-Version: 1.0
+
+Name: LICENSE
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: 4TXmd7Jvnhq9GJugLpPG04urlto=
+SHA256-Digest: sLUVSmkchFOTYKrTvnf5Wg+U6Eku+Lv/Co1v6ZMVBBo=
+
+Name: manifest.json
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: 5opw+aeMbhAMgbYoQMRbGsmpqd4=
+SHA256-Digest: OueBm2SR+IpIMgsoanMFlwz4/jFPRiXrixldVUvjOEg=
+
+Name: icons/128.png
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: 9Ge8e/eGmVa/yQpYT9cxo71qqQs=
+SHA256-Digest: PF6EUyk3fpwEj85pvNAT4gmGuaYHLWn4YWxBbqkvDbA=
+
+Name: icons/2048.png
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: FfgaOT459jaPCnGp0bI7cDnTemk=
+SHA256-Digest: b23cybPT7iS7WSDlemY6ttjDlR/ep17cnw55iZAV21Q=
+
+Name: icons/HowLongToBeat-on-Steam.png
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: /Zp/VlTum6R83Px3AXNo90I4epk=
+SHA256-Digest: kq/PvvIT2SPnUGzAnSJNpJJaRZhvbkXQCorHSBI1Ujs=
+
+Name: css/style.css
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: T/aIuWgCeW9bunuP2A2CE8rKoEM=
+SHA256-Digest: 6TuEKgCak0D40lMqMI8p7gw/16fRUoZS6n/G/iOkAL4=
+
+Name: scripts/main.js
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: mCCK5QAvxNQQ3gIBLlPYoIFC2z4=
+SHA256-Digest: fZlUfo5UHNSs2mHyZbiDO6r2hREnZfz5qstDMHkkTsY=
+
+Name: scripts/background.js
+Digest-Algorithms: SHA1 SHA256
+SHA1-Digest: RrZv78gXt0DtxpkjSZRDB/bkEMU=
+SHA256-Digest: iCowNv4JWCvx2dMY9tH8Lfe6hR9rvdInihiduyCzv2g=
+
