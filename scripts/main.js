@@ -34,7 +34,7 @@ async function getHLTBData(gameId) {
     const doc = await getPage(`https://howlongtobeat.com/game/${gameId}`);
     if (!doc) return;
     let scores = [];
-    doc?.querySelectorAll("li[class*=GameStats_short__], li[class*=GameStats_long__], li[class*=GameStats_full__]")?.forEach((el, i) => {
+    doc?.querySelectorAll("li[class^=GameStats-][class*=_short], li[class^=GameStats-][class*=_long], li[class^=GameStats-][class*=_full]")?.forEach((el, i) => {
         if (el?.querySelector('h4')?.innerText == "All Styles")
             return;
         scores[i] = { name: el?.querySelector('h4')?.innerText, value: el?.querySelector('h5')?.innerText, timeColor: el?.classList[1] };
