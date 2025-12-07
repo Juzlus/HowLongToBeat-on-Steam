@@ -1,6 +1,6 @@
 let customReplaces = null;
 let subPage = "search"
-const version = "1.9";
+const version = "1.10";
 
 let token = null;
 let apiUserKey = null;
@@ -50,29 +50,31 @@ async function getKey() {
     .then(response => response.text())
     .then(html => {
       if (!html) return;
-      const _appUrl = html.slice(html.indexOf("/pages/_app-") - 40).split('"')[1];
+      const _appUrl = html.slice(html.indexOf("/pages/_app-") == -1 ? html.indexOf('src="/_next/static/chunks/') : (html.indexOf("/pages/_app-") - 40)).split('"')[1];
       if (!_appUrl) return;
       appUrl = _appUrl;
     });
 
   if (appUrl)
-    await fetch(`https://howlongtobeat.com${appUrl}`)
-      .then(response2 => response2.text())
-      .then(script => {
-        if (!script) return;
-        const userKey = script.slice(script.indexOf('users:{id:"')).split('"')[1];
-        if (userKey)
-          apiUserKey = userKey;
+    console.log(`https://howlongtobeat.com${appUrl}`)
+  await fetch(`https://howlongtobeat.com${appUrl}`)
+    .then(response2 => response2.text())
+    .then(script => {
+      if (!script) return;
+      const userKey = script.slice(script.indexOf('users:{id:"')).split('"')[1];
+      if (userKey)
+        apiUserKey = userKey;
 
-        const index = script.indexOf('searchOptions:');
-        const frag = script.slice(index - 2000, index).replace("init?t=", "");
-        subPage = frag.slice(frag.indexOf(`fetch("/api/`) + 12, frag.indexOf('/".concat'));
-
-        const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
-        matches.forEach(el => {
-          apiSearchKey = !apiSearchKey ? el[1] : apiSearchKey + el[1];
-        });
+      const index = script.indexOf('searchOptions:');
+      const frag = script.slice(index - 2000, index).replace("init?t=", "");
+      subPage = frag.slice(frag.indexOf(`/api/`) + 5, frag.length - 1);
+      subPage = subPage.slice(0, subPage.indexOf('/'));
+      console.log(subPage)
+      const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
+      matches.forEach(el => {
+        apiSearchKey = !apiSearchKey ? el[1] : apiSearchKey + el[1];
       });
+    });
 }
 
 getKey();
@@ -144,6 +146,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         headers["x-auth-token"] = token;
 
       try {
+        console.log(`https://howlongtobeat.com/api/${subPage}/${apiSearchKey ? `${apiSearchKey}` : ""}`);
         const response = await fetch(`https://howlongtobeat.com/api/${subPage}/${apiSearchKey ? `${apiSearchKey}` : ""}`, {
           method: 'POST',
           headers: headers,
@@ -151,6 +154,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
 
         const text = await response.text();
+        console.log("RESPONSE: " + text);
         sendResponse({ success: true, data: text });
       } catch (error) {
         sendResponse({ success: false, error: error.toString() });
