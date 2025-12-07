@@ -55,26 +55,27 @@ async function getKey() {
       appUrl = _appUrl;
     });
 
-  if (appUrl)
+  if (appUrl) {
     console.log(`https://howlongtobeat.com${appUrl}`)
-  await fetch(`https://howlongtobeat.com${appUrl}`)
-    .then(response2 => response2.text())
-    .then(script => {
-      if (!script) return;
-      const userKey = script.slice(script.indexOf('users:{id:"')).split('"')[1];
-      if (userKey)
-        apiUserKey = userKey;
+    await fetch(`https://howlongtobeat.com${appUrl}`)
+      .then(response2 => response2.text())
+      .then(script => {
+        if (!script) return;
+        const userKey = script.slice(script.indexOf('users:{id:"')).split('"')[1];
+        if (userKey)
+          apiUserKey = userKey;
 
-      const index = script.indexOf('searchOptions:');
-      const frag = script.slice(index - 2000, index).replace("init?t=", "");
-      subPage = frag.slice(frag.indexOf(`/api/`) + 5, frag.length - 1);
-      subPage = subPage.slice(0, subPage.indexOf('/'));
-      console.log(subPage)
-      const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
-      matches.forEach(el => {
-        apiSearchKey = !apiSearchKey ? el[1] : apiSearchKey + el[1];
+        const index = script.indexOf('searchOptions:');
+        const frag = script.slice(index - 2000, index).replace("init?t=", "");
+        subPage = frag.slice(frag.indexOf(`/api/`) + 5, frag.length - 1);
+        subPage = subPage.slice(0, subPage.indexOf('/'));
+        console.log(subPage)
+        const matches = [...frag.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
+        matches.forEach(el => {
+          apiSearchKey = !apiSearchKey ? el[1] : apiSearchKey + el[1];
+        });
       });
-    });
+  }
 }
 
 getKey();
