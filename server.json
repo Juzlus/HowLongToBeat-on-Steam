@@ -1,6 +1,6 @@
 {
-  "version": "1.10",
-  "version_firefox": "1.10",
+  "version": "1.11",
+  "version_firefox": "1.11",
   "hltb_selector": "[class^=\"GameStats-\"][class*=\"_stat\"]",
   "custom_replaces": [
     "Sea of Thieves 2024 Edition#Sea of Thieves",
