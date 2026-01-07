@@ -6,6 +6,14 @@ async function getCustomReplaces() {
     });
 }
 
+async function getHLTBSelector() {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ action: 'getHLTBSelector' }, response => {
+            resolve(response?.success ? response.data : null);
+        });
+    });
+}
+
 async function fetchHTML(url) {
     return new Promise((resolve, reject) => {
         chrome.runtime.sendMessage({ action: 'fetchHTML', url: url }, response => {
@@ -31,14 +39,19 @@ async function getPage(url) {
 }
 
 async function getHLTBData(gameId) {
-    const doc = await getPage(`https://howlongtobeat.com/game/${gameId}`);
+    let url = `https://howlongtobeat.com/game/${gameId}`;
+    console.log(`\x1b[34m[HowLongToBeat on Steam]\x1b[35m Fetching: ${url}\x1b[0m`);
+    const doc = await getPage(url);
     if (!doc) return;
+
     let scores = [];
-    doc?.querySelectorAll("li[class^=GameStats-][class*=_short], li[class^=GameStats-][class*=_long], li[class^=GameStats-][class*=_full]")?.forEach((el, i) => {
-        if (el?.querySelector('h4')?.innerText == "All Styles")
-            return;
-        scores[i] = { name: el?.querySelector('h4')?.innerText, value: el?.querySelector('h5')?.innerText, timeColor: el?.classList[1] };
-    });
+    let selector = await getHLTBSelector();
+    if (selector)
+        doc?.querySelectorAll(selector)?.forEach((el, i) => {
+            if (el?.querySelector('h4')?.innerText == "All Styles")
+                return;
+            scores[i] = { name: el?.querySelector('h4')?.innerText, value: el?.querySelector('h5')?.innerText, timeColor: el?.classList[1] };
+        });
     return scores;
 }
 
@@ -100,10 +113,18 @@ async function createDiv() {
     if (!name || !steamId) return;
 
     const gameData = await searchByName(name) || await searchByName(name?.replace(/\.([^\s]|$)/g, '. $1')) || await searchByName(await getUntranslatedTitle(steamId));
-    if (!gameData) return;
+    if (!gameData) {
+        console.log(`\x1b[34m[HowLongToBeat on Steam]\x1b[35m Game name not found!\x1b[0m`);
+        return;
+    }
+    console.log(`\x1b[34m[HowLongToBeat on Steam]\x1b[35m Game name found: ${gameData?.game_name}\x1b[0m`);
 
     const scores = await getHLTBData(gameData?.game_id);
-    if (!scores || !scores?.length) return;
+    if (!scores || !scores?.length) {
+        console.log(`\x1b[34m[HowLongToBeat on Steam]\x1b[35m Get HLTB data for game ID ${gameData?.game_id}: Error\x1b[0m`);
+        return;
+    }
+    console.log(`\x1b[34m[HowLongToBeat on Steam]\x1b[35m Get HLTB data for game ID ${gameData?.game_id}: Success\x1b[0m`);
 
     let innerDiv = '';
     const div = document.createElement("a");

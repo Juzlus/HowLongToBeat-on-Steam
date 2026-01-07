@@ -1,6 +1,7 @@
 let customReplaces = null;
+let HLTBSelector = null;
 let subPage = "search"
-const version = "1.10";
+const version = "1.11";
 
 let token = null;
 let apiUserKey = null;
@@ -20,6 +21,7 @@ fetch('https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/head
         type: 'basic'
       });
     customReplaces = data?.custom_replaces;
+    HLTBSelector = data?.hltb_selector;
 
     chrome.notifications.onClicked.addListener((notifId) => {
       if (notifId !== 'updateNotification') return;
@@ -92,6 +94,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'getCustomReplaces') {
     return sendResponse({ success: customReplaces ? true : false, data: customReplaces });
+  }
+  else if (message.action === 'getHLTBSelector') {
+    return sendResponse({ success: HLTBSelector ? true : false, data: HLTBSelector });
   }
   else if (message.action === 'fetchHTML') {
     fetch(message.url)
