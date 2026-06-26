@@ -1,12 +1,15 @@
 let customReplaces = null;
 let HLTBSelector = null;
 let subPage = null;
-let token = null;
 let apiUserKey = null;
 let apiSearchKey = null;
 let fetchData = null;
 
-const version = "1.12";
+let xAuthToken = null;
+let xHpKey = null;
+let xHpVal = null;
+
+const version = "1.13";
 const firefox = true;
 
 async function initConfig() {
@@ -21,22 +24,19 @@ async function initConfig() {
           message: 'New version available. Click the button below!',
           priority: 1,
           iconUrl: 'https://raw.githubusercontent.com/Juzlus/HowLongToBeat-on-Steam/refs/heads/main/icons/2048.png',
-          type: 'basic',
-          buttons: [{ title: 'See Release' }, { title: 'Download' }]
+          type: 'basic'
         });
 
     customReplaces = data?.custom_replaces;
     HLTBSelector = data?.hltb_selector;
     subPage = data?.subPage;
-
   } catch (e) { printLog(`Config error: ${e}`, true); }
 }
 
-chrome.notifications.onButtonClicked.addListener((notifId, btnIdx) => {
+chrome.notifications.onClicked.addListener((notifId) => {
   if (notifId !== 'updateNotification') return;
   const baseUrl = 'https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/';
-  const url = btnIdx === 0 ? baseUrl : `${baseUrl}download/HowLongToBeat_on_Steam_v${data?.version}${firefox ? '_FireFox' : ''}.zip`
-  chrome.tabs.create({ url });
+  chrome.tabs.create({ url: baseUrl });
 });
 
 async function getFetchData() {
@@ -122,19 +122,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (!apiSearchKey) await getKey();
 
       try {
-        const init = await fetch(`https://howlongtobeat.com/api/${subPage}/init?t=${Date.now()}`).then(response => response.json());
-        token = init?.token || token;
-
         let payload = fetchData.replace("{SEARCH_TERMS}", JSON.stringify(message.gameName.split(' ')));
         if (apiUserKey) payload = payload.replace("{USER_ID}", apiUserKey);
 
+        const headers = {
+          "Content-Type": "application/json",
+          origin: "https://howlongtobeat.com/",
+        };
+
+        const init = await fetch(`https://howlongtobeat.com/api/${subPage}/init?t=${Date.now()}`).then(response => response.json());
+        if (init?.token)
+        {
+          xAuthToken = init?.token || "";
+          headers["x-auth-token"] = xAuthToken
+        }
+        if (init?.hpKey)
+        {
+          xHpKey = init?.hpKey || "";
+          headers["X-Hp-Key"] = xHpKey
+        }
+        if (init?.hpVal)
+        {
+          xHpVal = init?.hpVal || "";
+          headers["X-Hp-Val"] = xHpVal
+          payload = payload.replace('"useCache": true', `"useCache": true,\n  "${xHpKey}": "${xHpVal}"`);
+        }
+
+        printLog("Headers: " + JSON.stringify(headers));
+        printLog(payload)
+
         const response = await fetch(`https://howlongtobeat.com/api/${subPage}/${apiSearchKey || ""}`, {
           method: 'POST',
-          headers: {
-            "Content-Type": "application/json",
-            origin: "https://howlongtobeat.com/",
-            "x-auth-token": token || ""
-          },
+          headers: headers,
           body: payload
         });
 

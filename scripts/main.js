@@ -169,7 +169,7 @@ async function createGameDiv() {
 
     const scores = await getHLTBData(gameData.game_id);
     if (!scores) return;
-    
+
     printLog("HLTB info fetched successfully.");
     updateUI(gameData, scores);
 }

@@ -11,10 +11,16 @@
 
 # 🤔 About
 
-**HowLongToBeat-on-Steam** is an simple wrapper to fetch data from [HowLongToBeat.com](https://howlongtobeat.com) on [Steam app page](https://store.steampowered.com). This extension also uses the [SteamDB](https://steamdb.info) to reverse the translated title.
+**HowLongToBeat-on-Steam** is an simple wrapper to fetch data from [HowLongToBeat.com](https://howlongtobeat.com) on [Steam app page](https://store.steampowered.com). This extension also uses the Steam API to get the untranslated title.
 
 
-## 📁 How to add an extension
+## 💾 Download from the extensions site
+
+- `chromewebstore.google.com`
+- [addons.mozilla.org](https://addons.mozilla.org/pl/firefox/addon/howlongtobeat-on-steam/)
+
+
+## 📁 How to add an extension locally
 
 1. Extract the files to a folder
 2. Chromium:
