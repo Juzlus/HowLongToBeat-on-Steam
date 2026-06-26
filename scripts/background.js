@@ -38,7 +38,7 @@ async function initConfig() {
 chrome.notifications.onButtonClicked.addListener((notifId, btnIdx) => {
   if (notifId !== 'updateNotification') return;
   const baseUrl = 'https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/';
-  const url = btnIdx === 0 ? baseUrl : `${baseUrl}download/HowLongToBeat_on_Steam_v${data?.version}${firefox ? '_FireFox' : ''}.zip`
+  const url = btnIdx === 0 ? baseUrl : `${baseUrl}download/HowLongToBeat_on_Steam_v${version}${firefox ? '_FireFox' : ''}.zip`
   chrome.tabs.create({ url });
 });
 

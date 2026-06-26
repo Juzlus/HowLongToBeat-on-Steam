@@ -15,8 +15,8 @@
 
 ## 💾 Download from the extensions site
 
-- [chromewebstore.google.com]()
-- [addons.mozilla.org]()
+- `chromewebstore.google.com`
+- [addons.mozilla.org](https://addons.mozilla.org/pl/firefox/addon/howlongtobeat-on-steam/)
 
 ## 📁 How to add an extension locally
 
