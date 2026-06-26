@@ -1,12 +1,15 @@
 let customReplaces = null;
 let HLTBSelector = null;
 let subPage = null;
-let token = null;
 let apiUserKey = null;
 let apiSearchKey = null;
 let fetchData = null;
 
-const version = "1.12";
+let xAuthToken = null;
+let xHpKey = null;
+let xHpVal = null;
+
+const version = "1.13";
 const firefox = false;
 
 async function initConfig() {
@@ -127,19 +130,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (!apiSearchKey) await getKey();
 
       try {
-        const init = await fetch(`https://howlongtobeat.com/api/${subPage}/init?t=${Date.now()}`).then(response => response.json());
-        token = init?.token || token;
-
         let payload = fetchData.replace("{SEARCH_TERMS}", JSON.stringify(message.gameName.split(' ')));
         if (apiUserKey) payload = payload.replace("{USER_ID}", apiUserKey);
 
+        const headers = {
+          "Content-Type": "application/json",
+          origin: "https://howlongtobeat.com/",
+        };
+
+        const init = await fetch(`https://howlongtobeat.com/api/${subPage}/init?t=${Date.now()}`).then(response => response.json());
+        if (init?.token)
+        {
+          xAuthToken = init?.token || "";
+          headers["x-auth-token"] = xAuthToken
+        }
+        if (init?.hpKey)
+        {
+          xHpKey = init?.hpKey || "";
+          headers["X-Hp-Key"] = xHpKey
+        }
+        if (init?.hpVal)
+        {
+          xHpVal = init?.hpVal || "";
+          headers["X-Hp-Val"] = xHpVal
+          payload = payload.replace('"useCache": true', `"useCache": true,\n  "${xHpKey}": "${xHpVal}"`);
+        }
+
+        printLog("Headers: " + JSON.stringify(headers));
+        printLog(payload)
+
         const response = await fetch(`https://howlongtobeat.com/api/${subPage}/${apiSearchKey || ""}`, {
           method: 'POST',
-          headers: {
-            "Content-Type": "application/json",
-            origin: "https://howlongtobeat.com/",
-            "x-auth-token": token || ""
-          },
+          headers: headers,
           body: payload
         });
 
