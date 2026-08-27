@@ -8,7 +8,7 @@
     },
     "browser_specific_settings": {
         "gecko": {
-            "id": "howlongtobeat-on-steam@juzlus"
+            "id": "howlongtobeat_on_steam@juzlus"
         }
     },
     "description": "Instantly check game completion times from HowLongToBeat on Steam pages.",
