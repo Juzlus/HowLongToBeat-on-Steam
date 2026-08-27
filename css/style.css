@@ -1,3 +1,8 @@
+#howlongtobeat_wrapper {
+    width: 100%;
+    display: inline-grid;
+}
+
 #howlongtobeat_block {
     border-radius: 4px;
     display: inline-flex;
@@ -96,20 +101,35 @@
     opacity: 0.05;
 }
 
+#howlongtobeat_update {
+    background-color: rgb(231 185 0);
+    color: #000;
+    width: calc(100% - 8px);
+    display: block;
+    padding: 4px;
+    border-radius: 0 0 4px 4px;
+    text-decoration: underline;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: -10px;
+    justify-self: center;
+    text-align: center;
+}
+
 @media only screen and (max-width: 910px) {
-    #howlongtobeat_block {
+    #howlongtobeat_wrapper {
         width: 50%;
     }
 }
 
 @media only screen and (max-width: 625px) {
-    #howlongtobeat_block {
+    #howlongtobeat_wrapper {
         width: 98.5%;
     }
 }
 
 @media only screen and (max-width: 500px) {
-    #howlongtobeat_block {
+    #howlongtobeat_wrapper {
         width: 100%;
     }
 }

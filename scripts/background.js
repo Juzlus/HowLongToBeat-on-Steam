@@ -9,8 +9,9 @@ let xAuthToken = null;
 let xHpKey = null;
 let xHpVal = null;
 
-const version = "1.13";
+const version = "1.14";
 const firefox = false;
+let updateAvailable = false;
 
 async function initConfig() {
   try {
@@ -19,6 +20,14 @@ async function initConfig() {
     if (!data) return;
     
     if (data.version != version)
+    {
+      updateAvailable = true;
+
+      const alertKey = `update_alert_${data.version}`;
+      chrome.storage.local.get(alertKey, (result) => {
+        if (result[alertKey]) return;
+
+        chrome.storage.local.set({ [alertKey]: true });
         chrome.notifications.create('updateNotification', {
           title: 'HowLongToBeat on Steam',
           message: 'New version available. Click the button below!',
@@ -27,6 +36,8 @@ async function initConfig() {
           type: 'basic',
           buttons: [{ title: 'See Release' }, { title: 'Download' }]
         });
+      });
+    }
 
     customReplaces = data?.custom_replaces;
     HLTBSelector = data?.hltb_selector;
@@ -80,8 +91,9 @@ async function getKey() {
       const searchIndex = script.indexOf('searchOptions:')
       const fragment = script.slice(searchIndex - 2000, searchIndex);
 
-      const subPageMatch = fragment.match(/\/api\/([^/"]+)\//);
-      if (subPageMatch) subPage = subPageMatch[1];
+      const subPageMatch = script.match(/\/api\/(search\/site)\/init/);
+      if (subPageMatch && !subPage)
+        subPage = subPageMatch[1];
       printLog(`SubPage: ${subPage}`)
 
       const keyMatches = [...fragment.matchAll(/\.concat\(["']([^"']+)["']\)/g)];
@@ -114,7 +126,9 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'getCustomReplaces')
+  if (message.action === 'needUpdate')
+    return sendResponse({ success: true, data: updateAvailable });
+  else if (message.action === 'getCustomReplaces')
     return sendResponse({ success: !!customReplaces, data: customReplaces });
   else if (message.action === 'getHLTBSelector')
     return sendResponse({ success: !!HLTBSelector, data: HLTBSelector });
@@ -138,7 +152,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           origin: "https://howlongtobeat.com/",
         };
 
-        const init = await fetch(`https://howlongtobeat.com/api/${subPage}/init?t=${Date.now()}`).then(response => response.json());
+        const initUrl = `https://howlongtobeat.com/api/${subPage}/init?t=${Date.now()}`;
+        printLog("InitUrl: " + initUrl);
+
+        const initResponse = await fetch(initUrl);
+        const init = await initResponse.json();
+        
         if (init?.token)
         {
           xAuthToken = init?.token || "";
@@ -157,7 +176,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
 
         printLog("Headers: " + JSON.stringify(headers));
-        printLog(payload)
+        printLog("Payload: " + payload);
 
         const response = await fetch(`https://howlongtobeat.com/api/${subPage}/${apiSearchKey || ""}`, {
           method: 'POST',
@@ -181,6 +200,8 @@ function printLog(message, isError = false) {
     console.log(`%c${tag} %c${message}`, tagStyle, msgStyle);
 }
 
-initConfig();
-getFetchData();
-getKey();
+(async () => {
+  await initConfig();
+  await getFetchData();
+  await getKey();
+})();

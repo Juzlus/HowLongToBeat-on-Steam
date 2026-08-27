@@ -1,13 +1,14 @@
 {
     "manifest_version": 3,
     "name": "HowLongToBeat on Steam",
-    "version": "1.13",
+    "version": "1.14",
     "author": "Juzlus",
     "icons": {
         "128": "icons/128.png"
     },
     "description": "Instantly check game completion times from HowLongToBeat on Steam pages.",
     "permissions": [
+        "storage",
         "notifications",
         "declarativeNetRequestWithHostAccess",
         "declarativeNetRequestFeedback"

@@ -60,34 +60,51 @@ async function searchByName(name, year = null) {
 }
 
 async function renderUI(gameName) {
-    const existing = document.getElementById("howlongtobeat_block");
+    const existing = document.getElementById("howlongtobeat_wrapper");
     if (existing) existing.remove();
 
     const target = await waitForElm(".page_content .rightcol.game_meta_data");
     if (!target) return null;
 
     const gameCover = document.querySelector('img.game_header_image_full');
+    const wrapper = document.createElement("div");
+    wrapper.id = "howlongtobeat_wrapper";
 
     const container = document.createElement("a");
     container.id = "howlongtobeat_block";
     container.title = `HowLongToBeat - ${gameName}`;
     container.href = `https://howlongtobeat.com/?q=${gameName}`;
-    container.className = `large`;
-    if (gameCover) container.style = `--cover-img: url('${gameCover?.src}')`;
+    container.className = "large";
 
-    const item = document.createElement('div');
+    if (gameCover)
+        container.style = `--cover-img: url('${gameCover.src}')`;
+
+    const item = document.createElement("div");
     item.style.width = "100%";
     item.className = "time_00";
     item.innerHTML = `<h4>HowLongToBeat on Steam</h4><h5 class="howlongtobeat_searching"><b>Searching:</b> "${gameName}"</h5>`;
+
     container.appendChild(item);
+    wrapper.appendChild(container);
 
     const steamdb = target.querySelector(".steamdb_stats");
-    if (steamdb) steamdb.after(container);
-    else target.prepend(container);
+    if (steamdb) steamdb.after(wrapper);
+    else target.prepend(wrapper);
+
+    const needUpdate = await callBackground("needUpdate") || false;
+    if (needUpdate) {
+        const updateItem = document.createElement("a");
+        updateItem.id = "howlongtobeat_update";
+        updateItem.innerHTML = ` Update Available! Click to see the release page.`;
+        updateItem.href = "https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/";
+        updateItem.target = "_blank";
+
+        wrapper.appendChild(updateItem);
+    }
 }
 
 async function updateUI(gameData, scores) {
-    const existing = document.getElementById("howlongtobeat_block");
+    const existing = document.getElementById("howlongtobeat_wrapper");
     if (existing) existing.remove();
 
     const target = await waitForElm(".page_content .rightcol.game_meta_data");
@@ -95,24 +112,42 @@ async function updateUI(gameData, scores) {
 
     const gameCover = document.querySelector('img.game_header_image_full');
 
+    const wrapper = document.createElement("div");
+    wrapper.id = "howlongtobeat_wrapper";
+
     const container = document.createElement("a");
     container.id = "howlongtobeat_block";
     container.title = `HowLongToBeat - ${gameData?.game_name}`;
     container.href = `https://howlongtobeat.com/game/${gameData?.game_id}`;
-    container.style = `--cover-img: url('${(gameCover ? gameCover?.src : `https://howlongtobeat.com/games/${gameData?.game_image}`)}')`;
-    if (scores.length == 1) container.className = `large`;
+    container.style = `--cover-img: url('${(gameCover ? gameCover.src : `https://howlongtobeat.com/games/${gameData?.game_image}`)}')`;
+
+    if (scores.length == 1)
+        container.className = "large";
 
     scores.forEach(s => {
-        const item = document.createElement('div');
-        item.style.width = `${100 / scores?.length}%`;
+        const item = document.createElement("div");
+        item.style.width = `${100 / scores.length}%`;
         item.className = s.timeColor;
         item.innerHTML = `<h4>${s.name}</h4><h5>${s.value}</h5>`;
         container.appendChild(item);
     });
 
+    wrapper.appendChild(container);
+
     const steamdb = target.querySelector(".steamdb_stats");
-    if (steamdb) steamdb.after(container);
-    else target.prepend(container);
+    if (steamdb) steamdb.after(wrapper);
+    else target.prepend(wrapper);
+
+    const needUpdate = await callBackground("needUpdate") || false;
+    if (needUpdate) {
+        const updateItem = document.createElement("a");
+        updateItem.id = "howlongtobeat_update";
+        updateItem.innerHTML = ` Update Available! Click to see the release page.`;
+        updateItem.href = "https://github.com/Juzlus/HowLongToBeat-on-Steam/releases/latest/";
+        updateItem.target = "_blank";
+
+        wrapper.appendChild(updateItem);
+    }
 }
 
 const waitForElm = async (selector) => {
@@ -169,7 +204,7 @@ async function createGameDiv() {
 
     const scores = await getHLTBData(gameData.game_id);
     if (!scores) return;
-    
+
     printLog("HLTB info fetched successfully.");
     updateUI(gameData, scores);
 }
