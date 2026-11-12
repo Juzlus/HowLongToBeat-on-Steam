@@ -1,7 +1,7 @@
 {
   "version": "1.14",
   "version_firefox": "1.14",
-  "hltb_selector": "[class^=\"aP4Tyq\"][class*=\"_stat time_100\"]",
+  "hltb_selector": "[class^=\"aP4Tyq\"][class*=\"_stat time\"]",
   "custom_replaces": [
     "Sea of Thieves 2024 Edition#Sea of Thieves",
     "Game of the Year Edition#GOTY",
